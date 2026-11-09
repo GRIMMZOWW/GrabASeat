@@ -27,4 +27,5 @@ Coming soon.
 
 | Day | What I built |
 | --- | ------------ |
+| 1   | Spring Boot backend setup, MySQL config, GET /api/health endpoint |
 
