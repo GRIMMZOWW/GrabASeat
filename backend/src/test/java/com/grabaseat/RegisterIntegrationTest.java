@@ -1,5 +1,6 @@
 package com.grabaseat;
 
+import com.grabaseat.dto.LoginRequest;
 import com.grabaseat.dto.RegisterRequest;
 import com.grabaseat.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.datasource.driver-class-name=org.h2.Driver",
     "spring.datasource.username=sa",
     "spring.datasource.password=",
-    "spring.jpa.hibernate.ddl-auto=create-drop"
+    "spring.jpa.hibernate.ddl-auto=create-drop",
+    "JWT_SECRET=supersecretkeyformyseatbookingapp12345"
 })
 class RegisterIntegrationTest {
 
@@ -42,7 +46,8 @@ class RegisterIntegrationTest {
 
     @Test
     void registeringSameEmailTwiceIsRejected() throws Exception {
-        RegisterRequest request = new RegisterRequest("Test User", "test@example.com", "password123");
+        String uniqueEmail = "user_" + UUID.randomUUID() + "@example.com";
+        RegisterRequest request = new RegisterRequest("Test User", uniqueEmail, "password123");
         String json = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/api/auth/register")
@@ -55,5 +60,20 @@ class RegisterIntegrationTest {
                 .content(json))
                 .andExpect(status().isConflict());
     }
-}
 
+    @Test
+    void loginWithWrongPasswordReturns401() throws Exception {
+        String uniqueEmail = "user_" + UUID.randomUUID() + "@example.com";
+        RegisterRequest registerRequest = new RegisterRequest("Test User", uniqueEmail, "correctPassword123");
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated());
+
+        LoginRequest wrongLoginRequest = new LoginRequest(uniqueEmail, "wrongPassword456");
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(wrongLoginRequest)))
+                .andExpect(status().isUnauthorized());
+    }
+}

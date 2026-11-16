@@ -29,4 +29,5 @@ Coming soon.
 | --- | ------------ |
 | 1   | Spring Boot backend setup, MySQL config, GET /api/health endpoint |
 | 2   | User table and register API |
+| 3   | Login with JWT |
 
