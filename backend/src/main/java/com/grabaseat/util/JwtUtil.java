@@ -1,6 +1,7 @@
 package com.grabaseat.util;
 
 import com.grabaseat.model.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,5 +36,16 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
     }
-}
 
+    public Claims validateAndGetClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
