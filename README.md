@@ -33,4 +33,5 @@ Coming soon.
 | 4   | JWT filter and admin account |
 | 5   | Movie CRUD |
 | 6   | Theatres and shows |
+| 7   | Seats for each show and the seat map |
 
