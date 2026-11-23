@@ -32,4 +32,5 @@ Coming soon.
 | 3   | Login with JWT |
 | 4   | JWT filter and admin account |
 | 5   | Movie CRUD |
+| 6   | Theatres and shows |
 
