@@ -42,6 +42,10 @@ public class ShowSeat {
     @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
     public ShowSeat() {
     }
 
@@ -93,5 +97,13 @@ public class ShowSeat {
 
     public void setLockedUntil(LocalDateTime lockedUntil) {
         this.lockedUntil = lockedUntil;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 }

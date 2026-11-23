@@ -14,4 +14,6 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<ShowSeat> findByShowIdAndSeatNumberIn(Long showId, List<String> seatNumbers);
+
+    List<ShowSeat> findByBookingId(Long bookingId);
 }

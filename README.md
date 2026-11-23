@@ -35,4 +35,5 @@ Coming soon.
 | 6   | Theatres and shows |
 | 7   | Seats for each show and the seat map |
 | 8   | Seat locking |
+| 9   | Booking and mock payment |
 

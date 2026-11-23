@@ -1,11 +1,15 @@
 package com.grabaseat.controller;
 
+import com.grabaseat.dto.BookingRequest;
+import com.grabaseat.dto.BookingResponse;
 import com.grabaseat.dto.LockSeatsRequest;
 import com.grabaseat.dto.LockSeatsResponse;
 import com.grabaseat.dto.SeatResponse;
 import com.grabaseat.dto.ShowResponse;
+import com.grabaseat.service.BookingService;
 import com.grabaseat.service.ShowService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +26,11 @@ import java.util.List;
 public class ShowController {
 
     private final ShowService showService;
+    private final BookingService bookingService;
 
-    public ShowController(ShowService showService) {
+    public ShowController(ShowService showService, BookingService bookingService) {
         this.showService = showService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/{showId}")
@@ -43,5 +49,14 @@ public class ShowController {
             @Valid @RequestBody LockSeatsRequest request,
             Authentication authentication) {
         return ResponseEntity.ok(showService.lockSeats(showId, request, authentication.getName()));
+    }
+
+    @PostMapping("/{showId}/book")
+    public ResponseEntity<BookingResponse> bookSeats(
+            @PathVariable Long showId,
+            @Valid @RequestBody BookingRequest request,
+            Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookingService.bookSeats(showId, request, authentication.getName()));
     }
 }
