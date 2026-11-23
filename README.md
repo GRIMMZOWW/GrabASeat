@@ -31,4 +31,5 @@ Coming soon.
 | 2   | User table and register API |
 | 3   | Login with JWT |
 | 4   | JWT filter and admin account |
+| 5   | Movie CRUD |
 
