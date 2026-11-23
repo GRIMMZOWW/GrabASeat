@@ -1,11 +1,17 @@
 package com.grabaseat.controller;
 
+import com.grabaseat.dto.LockSeatsRequest;
+import com.grabaseat.dto.LockSeatsResponse;
 import com.grabaseat.dto.SeatResponse;
 import com.grabaseat.dto.ShowResponse;
 import com.grabaseat.service.ShowService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +35,13 @@ public class ShowController {
     @GetMapping("/{showId}/seats")
     public ResponseEntity<List<SeatResponse>> getSeatsForShow(@PathVariable Long showId) {
         return ResponseEntity.ok(showService.getSeatsForShow(showId));
+    }
+
+    @PostMapping("/{showId}/lock")
+    public ResponseEntity<LockSeatsResponse> lockSeats(
+            @PathVariable Long showId,
+            @Valid @RequestBody LockSeatsRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(showService.lockSeats(showId, request, authentication.getName()));
     }
 }

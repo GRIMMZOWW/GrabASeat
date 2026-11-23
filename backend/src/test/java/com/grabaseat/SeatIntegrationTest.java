@@ -71,11 +71,15 @@ class SeatIntegrationTest {
         ShowResponse showResponse = showService.createShow(request);
         Long showId = showResponse.getId();
 
-        // 1. Verify 80 seats created and seat map returns 80 AVAILABLE seats
+        // 1. Verify 80 seats created and seat map returns 80 AVAILABLE seats in natural order (A1, A2, A3 ... A10)
         mockMvc.perform(get("/api/shows/" + showId + "/seats")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(80)))
+                .andExpect(jsonPath("$[0].seatNumber", is("A1")))
+                .andExpect(jsonPath("$[1].seatNumber", is("A2")))
+                .andExpect(jsonPath("$[2].seatNumber", is("A3")))
+                .andExpect(jsonPath("$[9].seatNumber", is("A10")))
                 .andExpect(jsonPath("$[0].status", is("AVAILABLE")));
 
         // 2. Lock a seat with lockedUntil in the past, and lock a seat with lockedUntil in the future
