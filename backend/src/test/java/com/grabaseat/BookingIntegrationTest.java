@@ -8,6 +8,7 @@ import com.grabaseat.model.Movie;
 import com.grabaseat.model.PaymentMethod;
 import com.grabaseat.model.Role;
 import com.grabaseat.model.SeatStatus;
+import com.grabaseat.model.Show;
 import com.grabaseat.model.ShowSeat;
 import com.grabaseat.model.Theatre;
 import com.grabaseat.model.User;
@@ -79,6 +80,8 @@ class BookingIntegrationTest {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private Movie movie;
+    private Theatre theatre;
     private Long showId;
     private User userA;
     private User userB;
@@ -94,8 +97,8 @@ class BookingIntegrationTest {
         theatreRepository.deleteAll();
         userRepository.deleteAll();
 
-        Movie movie = movieRepository.save(new Movie("Inception", "English", "Sci-Fi", 148));
-        Theatre theatre = theatreRepository.save(new Theatre("PVR Grand", "Bangalore"));
+        movie = movieRepository.save(new Movie("Inception", "English", "Sci-Fi", 148));
+        theatre = theatreRepository.save(new Theatre("PVR Grand", "Bangalore"));
 
         LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(18).withMinute(0).withSecond(0).withNano(0);
         ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, 200.0);
@@ -235,5 +238,30 @@ class BookingIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].seatNumbers[0]", is("B2")));
+    }
+
+    @Test
+    void lockingAndBookingSeatsForPastShowReturns409() throws Exception {
+        // Create past show directly through repository
+        LocalDateTime pastStart = LocalDateTime.now().minusHours(2);
+        LocalDateTime pastEnd = pastStart.plusMinutes(120);
+        Show pastShow = showRepository.save(new Show(movie, theatre, 5, pastStart, pastEnd, 200.0));
+        showSeatRepository.save(new ShowSeat(pastShow, "A1", SeatStatus.AVAILABLE));
+
+        // Lock seats on past show -> 409
+        mockMvc.perform(post("/api/shows/" + pastShow.getId() + "/lock")
+                        .header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"seatNumbers\":[\"A1\"]}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error", is("Show has already started")));
+
+        // Book seats on past show -> 409
+        mockMvc.perform(post("/api/shows/" + pastShow.getId() + "/book")
+                        .header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"seatNumbers\":[\"A1\"],\"paymentMethod\":\"UPI\"}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error", is("Show has already started")));
     }
 }

@@ -3,6 +3,7 @@ package com.grabaseat.service;
 import com.grabaseat.dto.BookingRequest;
 import com.grabaseat.dto.BookingResponse;
 import com.grabaseat.exception.SeatUnavailableException;
+import com.grabaseat.exception.ShowClosedException;
 import com.grabaseat.exception.ShowNotFoundException;
 import com.grabaseat.model.Booking;
 import com.grabaseat.model.BookingStatus;
@@ -64,6 +65,10 @@ public class BookingService {
 
         Show show = showRepository.findById(showId)
                 .orElseThrow(() -> new ShowNotFoundException("Show not found"));
+
+        if (!show.getStartTime().isAfter(LocalDateTime.now())) {
+            throw new ShowClosedException("Show has already started");
+        }
 
         List<ShowSeat> seats = showSeatRepository.findByShowIdAndSeatNumberIn(showId, request.getSeatNumbers());
         Set<String> foundSeatNumbers = seats.stream().map(ShowSeat::getSeatNumber).collect(Collectors.toSet());

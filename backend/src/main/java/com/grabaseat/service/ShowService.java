@@ -8,6 +8,7 @@ import com.grabaseat.dto.ShowRequest;
 import com.grabaseat.dto.ShowResponse;
 import com.grabaseat.exception.MovieNotFoundException;
 import com.grabaseat.exception.SeatUnavailableException;
+import com.grabaseat.exception.ShowClosedException;
 import com.grabaseat.exception.ShowNotFoundException;
 import com.grabaseat.exception.ShowOverlapException;
 import com.grabaseat.exception.TheatreNotFoundException;
@@ -157,8 +158,11 @@ public class ShowService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Long userId = user.getId();
 
-        if (!showRepository.existsById(showId)) {
-            throw new ShowNotFoundException("Show not found");
+        Show show = showRepository.findById(showId)
+                .orElseThrow(() -> new ShowNotFoundException("Show not found"));
+
+        if (!show.getStartTime().isAfter(LocalDateTime.now())) {
+            throw new ShowClosedException("Show has already started");
         }
 
         List<ShowSeat> seats = showSeatRepository.findByShowIdAndSeatNumberIn(showId, request.getSeatNumbers());
