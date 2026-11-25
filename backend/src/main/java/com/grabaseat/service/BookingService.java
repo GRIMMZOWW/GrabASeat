@@ -4,6 +4,8 @@ import com.grabaseat.dto.AdminBookingResponse;
 import com.grabaseat.dto.AdminSummaryResponse;
 import com.grabaseat.dto.BookingRequest;
 import com.grabaseat.dto.BookingResponse;
+import com.grabaseat.exception.BookingNotCancellableException;
+import com.grabaseat.exception.BookingNotFoundException;
 import com.grabaseat.exception.SeatUnavailableException;
 import com.grabaseat.exception.ShowClosedException;
 import com.grabaseat.exception.ShowNotFoundException;
@@ -118,6 +120,56 @@ public class BookingService {
                 savedBooking.getPaymentMethod(),
                 savedBooking.getStatus(),
                 createdAt
+        );
+    }
+
+    @Transactional
+    public BookingResponse cancelBooking(Long bookingId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Booking booking = bookingRepository.findByIdAndUserId(bookingId, user.getId())
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+
+        if (booking.getStatus() != BookingStatus.CONFIRMED) {
+            throw new BookingNotCancellableException("Booking is already cancelled");
+        }
+
+        Show show = booking.getShow();
+        if (!show.getStartTime().isAfter(LocalDateTime.now())) {
+            throw new BookingNotCancellableException("Cannot cancel after the show has started");
+        }
+
+        List<ShowSeat> seats = showSeatRepository.findByBookingId(booking.getId());
+        List<String> seatNumbers = seats.stream()
+                .sorted(Comparator.comparing((ShowSeat s) -> s.getSeatNumber().substring(0, 1))
+                        .thenComparingInt(s -> Integer.parseInt(s.getSeatNumber().substring(1))))
+                .map(ShowSeat::getSeatNumber)
+                .toList();
+
+        for (ShowSeat seat : seats) {
+            seat.setStatus(SeatStatus.AVAILABLE);
+            seat.setBooking(null);
+            seat.setLockedByUserId(null);
+            seat.setLockedUntil(null);
+        }
+        showSeatRepository.saveAll(seats);
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
+        return new BookingResponse(
+                booking.getId(),
+                show.getMovie().getTitle(),
+                show.getTheatre().getName(),
+                show.getTheatre().getCity(),
+                show.getScreenNumber(),
+                show.getStartTime(),
+                seatNumbers,
+                booking.getTotalAmount(),
+                booking.getPaymentMethod(),
+                booking.getStatus(),
+                booking.getCreatedAt()
         );
     }
 

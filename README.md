@@ -78,6 +78,7 @@ API documentation is available at http://localhost:8080/swagger-ui/index.html
 | 7   | Seats for each show and the seat map |
 | 8   | Seat locking |
 | 9   | Booking and mock payment |
+| 10  | Cancel booking |
 | 11  | Admin view, BigDecimal and Swagger |
 | 12  | Docker and CI |
 | 13  | React setup, login and movies |

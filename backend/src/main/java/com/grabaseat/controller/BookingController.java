@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +27,12 @@ public class BookingController {
     @GetMapping("/my")
     public ResponseEntity<List<BookingResponse>> getMyBookings(Authentication authentication) {
         return ResponseEntity.ok(bookingService.getMyBookings(authentication.getName()));
+    }
+
+    @PostMapping("/{bookingId}/cancel")
+    public ResponseEntity<BookingResponse> cancelBooking(
+            @PathVariable Long bookingId,
+            Authentication authentication) {
+        return ResponseEntity.ok(bookingService.cancelBooking(bookingId, authentication.getName()));
     }
 }
