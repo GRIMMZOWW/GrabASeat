@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,13 +38,13 @@ public class Show {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     public Show() {
     }
 
-    public Show(Movie movie, Theatre theatre, Integer screenNumber, LocalDateTime startTime, LocalDateTime endTime, Double price) {
+    public Show(Movie movie, Theatre theatre, Integer screenNumber, LocalDateTime startTime, LocalDateTime endTime, BigDecimal price) {
         this.movie = movie;
         this.theatre = theatre;
         this.screenNumber = screenNumber;
@@ -96,11 +97,11 @@ public class Show {
         this.endTime = endTime;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

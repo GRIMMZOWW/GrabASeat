@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Run Maven tests
+        working-directory: backend
+        env:
+          JWT_SECRET: "ci-only-dummy-secret-0123456789-abcdefghij"
+          ADMIN_EMAIL: "ci-admin@example.com"
+          ADMIN_PASSWORD: "ci-only-dummy-password"
+          DB_USER: "ci-dummy-user"
+          DB_PASSWORD: "ci-dummy-password"
+        run: |
+          chmod +x mvnw
+          ./mvnw test
+
+      - name: Build Docker image
+        run: docker build -t grabaseat-backend ./backend

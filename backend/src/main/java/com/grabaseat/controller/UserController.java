@@ -1,5 +1,6 @@
 package com.grabaseat.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@Tag(name = "Users", description = "User profile")
 @RestController
 @RequestMapping("/api")
 public class UserController {

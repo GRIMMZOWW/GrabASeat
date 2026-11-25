@@ -2,6 +2,7 @@ package com.grabaseat.controller;
 
 import com.grabaseat.dto.BookingResponse;
 import com.grabaseat.service.BookingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Bookings", description = "User booking history")
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {

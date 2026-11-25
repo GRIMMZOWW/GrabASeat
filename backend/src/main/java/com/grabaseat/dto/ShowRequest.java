@@ -4,6 +4,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ShowRequest {
@@ -23,12 +24,12 @@ public class ShowRequest {
 
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.01", message = "Price must be more than 0")
-    private Double price;
+    private BigDecimal price;
 
     public ShowRequest() {
     }
 
-    public ShowRequest(Long movieId, Long theatreId, Integer screenNumber, LocalDateTime startTime, Double price) {
+    public ShowRequest(Long movieId, Long theatreId, Integer screenNumber, LocalDateTime startTime, BigDecimal price) {
         this.movieId = movieId;
         this.theatreId = theatreId;
         this.screenNumber = screenNumber;
@@ -68,11 +69,11 @@ public class ShowRequest {
         this.startTime = startTime;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

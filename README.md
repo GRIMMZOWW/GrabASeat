@@ -1,5 +1,7 @@
 # GrabASeat
 
+[![CI](https://github.com/GRIMMZOWW/GrabASeat/actions/workflows/ci.yml/badge.svg)](https://github.com/GRIMMZOWW/GrabASeat/actions/workflows/ci.yml)
+
 ## What GrabASeat is
 GrabASeat is a movie ticket booking web application inspired by platforms like BookMyShow. I am building it to practice Spring Boot, MySQL and React in one project. The main challenge is stopping two people from booking the same seat.
 
@@ -21,7 +23,26 @@ GrabASeat is a movie ticket booking web application inspired by platforms like B
 - [ ] Admin panel
 
 ## How to Run
-Coming soon.
+
+### Run tests
+```bash
+cd backend
+./mvnw test
+```
+
+### Run with Docker Compose
+1. Copy `.env.example` to `.env` and fill in the values:
+   - `DB_USER`
+   - `DB_PASSWORD`
+   - `JWT_SECRET`
+   - `ADMIN_EMAIL`
+   - `ADMIN_PASSWORD`
+2. Start the services:
+```bash
+docker compose up --build
+```
+
+API documentation is available at http://localhost:8080/swagger-ui/index.html
 
 ## Progress Log
 
@@ -36,4 +57,6 @@ Coming soon.
 | 7   | Seats for each show and the seat map |
 | 8   | Seat locking |
 | 9   | Booking and mock payment |
+| 11  | Admin view, BigDecimal and Swagger |
+| 12  | Docker and CI |
 

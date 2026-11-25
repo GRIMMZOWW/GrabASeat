@@ -1,5 +1,6 @@
 package com.grabaseat.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class MovieShowResponse {
@@ -9,12 +10,12 @@ public class MovieShowResponse {
     private String city;
     private Integer screenNumber;
     private LocalDateTime startTime;
-    private Double price;
+    private BigDecimal price;
 
     public MovieShowResponse() {
     }
 
-    public MovieShowResponse(Long id, String theatreName, String city, Integer screenNumber, LocalDateTime startTime, Double price) {
+    public MovieShowResponse(Long id, String theatreName, String city, Integer screenNumber, LocalDateTime startTime, BigDecimal price) {
         this.id = id;
         this.theatreName = theatreName;
         this.city = city;
@@ -43,7 +44,7 @@ public class MovieShowResponse {
         return startTime;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 }

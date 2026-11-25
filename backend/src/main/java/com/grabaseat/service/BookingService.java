@@ -1,5 +1,7 @@
 package com.grabaseat.service;
 
+import com.grabaseat.dto.AdminBookingResponse;
+import com.grabaseat.dto.AdminSummaryResponse;
 import com.grabaseat.dto.BookingRequest;
 import com.grabaseat.dto.BookingResponse;
 import com.grabaseat.exception.SeatUnavailableException;
@@ -18,6 +20,7 @@ import com.grabaseat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -90,7 +93,7 @@ public class BookingService {
             }
         }
 
-        Double totalAmount = show.getPrice() * seats.size();
+        BigDecimal totalAmount = show.getPrice().multiply(BigDecimal.valueOf(seats.size()));
         LocalDateTime createdAt = LocalDateTime.now();
         Booking booking = new Booking(user, show, totalAmount, request.getPaymentMethod(), BookingStatus.CONFIRMED, createdAt);
         Booking savedBooking = bookingRepository.save(booking);
@@ -147,5 +150,55 @@ public class BookingService {
                     );
                 })
                 .toList();
+    }
+
+    public List<AdminBookingResponse> getAllBookingsAdmin() {
+        List<Booking> bookings = bookingRepository.findAllByOrderByCreatedAtDesc();
+
+        return bookings.stream()
+                .map(b -> {
+                    List<String> seatNumbers = showSeatRepository.findByBookingId(b.getId()).stream()
+                            .sorted(Comparator.comparing((ShowSeat s) -> s.getSeatNumber().substring(0, 1))
+                                    .thenComparingInt(s -> Integer.parseInt(s.getSeatNumber().substring(1))))
+                            .map(ShowSeat::getSeatNumber)
+                            .toList();
+
+                    return new AdminBookingResponse(
+                            b.getId(),
+                            b.getUser().getEmail(),
+                            b.getShow().getMovie().getTitle(),
+                            b.getShow().getTheatre().getName(),
+                            b.getShow().getTheatre().getCity(),
+                            b.getShow().getScreenNumber(),
+                            b.getShow().getStartTime(),
+                            seatNumbers,
+                            b.getTotalAmount(),
+                            b.getPaymentMethod(),
+                            b.getStatus(),
+                            b.getCreatedAt()
+                    );
+                })
+                .toList();
+    }
+
+    public AdminSummaryResponse getAdminSummary() {
+        List<Booking> allBookings = bookingRepository.findAll();
+
+        long confirmedBookings = 0;
+        long cancelledBookings = 0;
+        long seatsSold = 0;
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Booking booking : allBookings) {
+            if (booking.getStatus() == BookingStatus.CONFIRMED) {
+                confirmedBookings++;
+                seatsSold += showSeatRepository.findByBookingId(booking.getId()).size();
+                totalRevenue = totalRevenue.add(booking.getTotalAmount());
+            } else if (booking.getStatus() == BookingStatus.CANCELLED) {
+                cancelledBookings++;
+            }
+        }
+
+        return new AdminSummaryResponse(confirmedBookings, cancelledBookings, seatsSold, totalRevenue);
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,7 +68,7 @@ class SeatIntegrationTest {
     @Test
     void showSeatsCreationAndStatusMappingRules() throws Exception {
         LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0);
-        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, 200.0);
+        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, BigDecimal.valueOf(200.0));
         ShowResponse showResponse = showService.createShow(request);
         Long showId = showResponse.getId();
 

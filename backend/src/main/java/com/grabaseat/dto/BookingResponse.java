@@ -3,6 +3,7 @@ package com.grabaseat.dto;
 import com.grabaseat.model.BookingStatus;
 import com.grabaseat.model.PaymentMethod;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class BookingResponse {
     private Integer screenNumber;
     private LocalDateTime startTime;
     private List<String> seatNumbers;
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private PaymentMethod paymentMethod;
     private BookingStatus status;
     private LocalDateTime createdAt;
@@ -25,7 +26,7 @@ public class BookingResponse {
 
     public BookingResponse(Long bookingId, String movieTitle, String theatreName, String city,
                            Integer screenNumber, LocalDateTime startTime, List<String> seatNumbers,
-                           Double totalAmount, PaymentMethod paymentMethod, BookingStatus status,
+                           BigDecimal totalAmount, PaymentMethod paymentMethod, BookingStatus status,
                            LocalDateTime createdAt) {
         this.bookingId = bookingId;
         this.movieTitle = movieTitle;
@@ -68,7 +69,7 @@ public class BookingResponse {
         return seatNumbers;
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 

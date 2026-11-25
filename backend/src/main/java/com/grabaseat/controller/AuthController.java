@@ -5,11 +5,13 @@ import com.grabaseat.dto.LoginResponse;
 import com.grabaseat.dto.RegisterRequest;
 import com.grabaseat.dto.UserResponse;
 import com.grabaseat.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Authentication", description = "User registration and login")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

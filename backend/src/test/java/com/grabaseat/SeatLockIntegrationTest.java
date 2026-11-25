@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.is;
@@ -86,7 +87,7 @@ class SeatLockIntegrationTest {
         Theatre theatre = theatreRepository.save(new Theatre("PVR Forum", "Bangalore"));
 
         LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
-        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, 250.0);
+        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, BigDecimal.valueOf(250.0));
         ShowResponse showResponse = showService.createShow(request);
         showId = showResponse.getId();
 

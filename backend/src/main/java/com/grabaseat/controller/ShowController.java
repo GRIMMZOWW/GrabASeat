@@ -8,6 +8,7 @@ import com.grabaseat.dto.SeatResponse;
 import com.grabaseat.dto.ShowResponse;
 import com.grabaseat.service.BookingService;
 import com.grabaseat.service.ShowService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Shows", description = "Shows, seats, locking, and booking")
 @RestController
 @RequestMapping("/api/shows")
 public class ShowController {

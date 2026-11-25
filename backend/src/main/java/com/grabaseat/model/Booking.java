@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,8 +31,8 @@ public class Booking {
     @JoinColumn(name = "show_id", nullable = false)
     private Show show;
 
-    @Column(nullable = false)
-    private Double totalAmount;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,7 +48,8 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(User user, Show show, Double totalAmount, PaymentMethod paymentMethod, BookingStatus status, LocalDateTime createdAt) {
+    public Booking(User user, Show show, BigDecimal totalAmount, PaymentMethod paymentMethod, BookingStatus status,
+            LocalDateTime createdAt) {
         this.user = user;
         this.show = show;
         this.totalAmount = totalAmount;
@@ -76,11 +78,11 @@ public class Booking {
         this.show = show;
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

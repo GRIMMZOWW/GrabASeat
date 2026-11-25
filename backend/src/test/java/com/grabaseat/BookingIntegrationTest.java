@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -101,7 +102,7 @@ class BookingIntegrationTest {
         theatre = theatreRepository.save(new Theatre("PVR Grand", "Bangalore"));
 
         LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(18).withMinute(0).withSecond(0).withNano(0);
-        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, 200.0);
+        ShowRequest request = new ShowRequest(movie.getId(), theatre.getId(), 1, startTime, BigDecimal.valueOf(200.0));
         ShowResponse showResponse = showService.createShow(request);
         showId = showResponse.getId();
 
@@ -245,7 +246,7 @@ class BookingIntegrationTest {
         // Create past show directly through repository
         LocalDateTime pastStart = LocalDateTime.now().minusHours(2);
         LocalDateTime pastEnd = pastStart.plusMinutes(120);
-        Show pastShow = showRepository.save(new Show(movie, theatre, 5, pastStart, pastEnd, 200.0));
+        Show pastShow = showRepository.save(new Show(movie, theatre, 5, pastStart, pastEnd, BigDecimal.valueOf(200.0)));
         showSeatRepository.save(new ShowSeat(pastShow, "A1", SeatStatus.AVAILABLE));
 
         // Lock seats on past show -> 409
