@@ -38,6 +38,8 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
+To populate sample movies, theatres, and shows on startup, set `SEED_DEMO_DATA=true`. It only fills an empty database (when both the movies and theatres tables have no rows). When seeded, a demo user account is created with email `demo@example.com` and password `Demo@1234`.
+
 ### Run tests
 ```bash
 cd backend
@@ -79,4 +81,6 @@ API documentation is available at http://localhost:8080/swagger-ui/index.html
 | 11  | Admin view, BigDecimal and Swagger |
 | 12  | Docker and CI |
 | 13  | React setup, login and movies |
+| 14  | Demo data seeder |
+| 15  | Show page, seat map and booking flow |
 

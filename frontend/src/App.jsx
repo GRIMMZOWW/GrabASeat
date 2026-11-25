@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import MovieList from './pages/MovieList';
+import MovieDetails from './pages/MovieDetails';
+import ShowPage from './pages/ShowPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -34,6 +36,8 @@ export default function App() {
       <Navbar user={user} onLogout={handleLogout} />
       <Routes>
         <Route path="/" element={<MovieList />} />
+        <Route path="/movies/:id" element={<MovieDetails />} />
+        <Route path="/shows/:showId" element={<ShowPage user={user} onLogout={handleLogout} />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<Navigate to="/" replace />} />

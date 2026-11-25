@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { apiFetch } from '../api';
 import './MovieList.css';
 
@@ -73,7 +74,7 @@ export default function MovieList() {
       {!loading && !error && movies.length > 0 && (
         <div className="movies-grid">
           {movies.map((movie) => (
-            <article key={movie.id} className="movie-card">
+            <Link key={movie.id} to={`/movies/${movie.id}`} className="movie-card">
               <div className="movie-card-header">
                 <span className="movie-tag">{movie.language}</span>
                 <span className="movie-tag">{movie.genre}</span>
@@ -86,7 +87,7 @@ export default function MovieList() {
                 </svg>
                 <span>{movie.durationMinutes} mins</span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       )}

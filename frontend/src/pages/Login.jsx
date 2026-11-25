@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api';
 import './AuthForm.css';
 
 export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from || '/';
+  const initialNotice = location.state?.message || null;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -32,7 +36,7 @@ export default function Login({ onLoginSuccess }) {
         role: data.role
       });
 
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -45,6 +49,12 @@ export default function Login({ onLoginSuccess }) {
       <div className="auth-card">
         <h1 className="auth-title">Sign In</h1>
         <p className="auth-subtitle">Enter your credentials to access your bookings.</p>
+
+        {initialNotice && !error && (
+          <div className="auth-notice-banner" role="status">
+            {initialNotice}
+          </div>
+        )}
 
         {error && (
           <div className="auth-error-banner" role="alert">
